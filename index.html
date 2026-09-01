@@ -691,6 +691,11 @@
 
           selectedImages[currentIndex];
 
+        if (!currentImage) {
+        alert("이미지 정보를 불러오는 중입니다. 잠시 후 다시 눌러주세요.");
+        return;
+        }
+
         const answer = {
 
           image: currentImage
