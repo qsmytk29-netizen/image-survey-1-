@@ -811,7 +811,13 @@ document.getElementById(
     // =========================
     // 다음 설문 로드
     // =========================
+document.getElementById("prevBtn").addEventListener(
+  "click",
+  function() {
 
+  if (currentIndex > 0) {
+
+    currentIndex--;
     loadSurvey();
 
     window.scrollTo({
