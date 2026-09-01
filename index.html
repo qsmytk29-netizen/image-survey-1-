@@ -825,25 +825,53 @@ document.getElementById(
     // 이전 버튼
     // =========================
 
-    document.getElementById("prevBtn").addEventListener(
-      "click",
-      function() {
+    document.getElementById("prevBtn").addEventListener("click", function() {
 
-        if (currentIndex > 0) {
+  // 첫 번째 이미지에서는 이전으로 갈 수 없음
+  if (currentIndex <= 0) {
+    return;
+  }
 
-          currentIndex--;
+  // 현재 작성 중인 응답이 있으면 브라우저에 임시 저장
+  const currentImage =
+    selectedImages[currentIndex];
 
-          loadSurvey();
+  if (currentImage) {
 
-          window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-          });
+    const tempAnswer = {
+      imageOrder: currentIndex + 1,
+      image: currentImage
+    };
 
-        }
+    questions.forEach((q, idx) => {
 
+      const checked =
+        document.querySelector(
+          `input[name="q${idx}"]:checked`
+        );
+
+      if (checked) {
+        tempAnswer["q" + (idx + 1)] = checked.value;
       }
-    );
+
+    });
+
+    responses[currentIndex] = tempAnswer;
+
+  }
+
+  // 이전 이미지로 이동
+  currentIndex = currentIndex - 1;
+
+  // 이전 설문 다시 불러오기
+  loadSurvey();
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
+});
     
   </script>
 
