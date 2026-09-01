@@ -668,170 +668,159 @@
 
       // 마지막 버튼 텍스트 변경
 
-      if (
-        currentIndex ===
-        selectedImages.length - 1
-      ) {
+      if (currentIndex === selectedImages.length - 1) {
 
-        document.getElementById(
-          "nextBtn"
-        ).innerText =
-
+        document.getElementById("nextBtn").innerText =
           "제출하기";
+
+      } else {
+
+        document.getElementById("nextBtn").innerText =
+          "다음";
+
+      }
+
+        if (currentIndex === 0) {
+
+          document.getElementById("prevBtn").disabled = true;
+
+      } else {
+
+          document.getElementById("prevBtn").disabled = false;
 
       }
 
     }
 
+
+    // 추가=====================
+    function saveCurrentResponse(answer) {
+
+      const gender =
+        document.querySelector(
+          'input[name="gender"]:checked'
+        ).value;
+
+      const age =
+        document.getElementById("age").value;
+
+      const sendData = {
+
+        respondentId: respondentId,
+
+        gender: gender,
+
+        age: age,
+
+        response: answer
+
+      };
+
+  fetch(
+    "https://script.google.com/macros/s/AKfycbyh5SISlivddmZM3Gn8tbkzHwuyIhPIaEtrJu5DDxEvvWXG1qDGIr_35X2DeEeoZNDAFA/exec",
+    {
+      method: "POST",
+      mode: "no-cors",
+      body: JSON.stringify(sendData)
+    }
+  );
+
+}
     // =========================
     // 다음 버튼
     // =========================
 
-    document.getElementById(
-      "surveyForm"
-    ).addEventListener(
-      "submit",
-      function(e) {
+document.getElementById(
+  "surveyForm"
+).addEventListener(
+  "submit",
+  function(e) {
 
-        e.preventDefault();
+    e.preventDefault();
 
-        // 응답 저장
+    // =========================
+    // 현재 이미지 정보
+    // =========================
 
-        const currentImage =
+    const currentImage =
+      selectedImages[currentIndex];
 
-          selectedImages[currentIndex];
+    if (!currentImage) {
+      alert("이미지 정보를 불러오는 중입니다. 잠시 후 다시 눌러주세요.");
+      return;
+    }
 
-        if (!currentImage) {
-        alert("이미지 정보를 불러오는 중입니다. 잠시 후 다시 눌러주세요.");
-        return;
-        }
+    // =========================
+    // 현재 응답 저장
+    // =========================
 
-        const answer = {
+    const answer = {
+      imageOrder: currentIndex + 1,
+      image: currentImage
+    };
 
-          image: currentImage
+    questions.forEach((q, idx) => {
 
-        };
+      answer[
+        "q" + (idx + 1)
+      ] =
+        document.querySelector(
+          `input[name="q${idx}"]:checked`
+        ).value;
 
-        questions.forEach((q, idx) => {
+    });
 
-          answer[
-            "q" + (idx + 1)
-          ] =
+    // 브라우저 안에도 저장
+    responses[currentIndex] = answer;
 
-            document.querySelector(
-              `input[name="q${idx}"]:checked`
-            ).value;
+    // =========================
+    // Google Sheets에 중간 저장
+    // =========================
 
-        });
+    saveCurrentResponse(answer);
 
-        responses[currentIndex] = answer;
+    // =========================
+    // 다음 이미지로 이동
+    // =========================
 
-        // 다음 이미지
+    currentIndex++;
 
-        currentIndex++;
+    // =========================
+    // 마지막 이미지까지 끝난 경우
+    // =========================
 
-        // 종료
+    if (
+      currentIndex >= selectedImages.length
+    ) {
 
-        if (
+      document.getElementById(
+        "progressBar"
+      ).style.width = "100%";
 
-          currentIndex >=
-          selectedImages.length
+      document.getElementById(
+        "surveyPage"
+      ).classList.add("hidden");
 
-        ) {
+      document.getElementById(
+        "thankYouPage"
+      ).classList.remove("hidden");
 
-          document.getElementById(
-            "progressBar"
-          ).style.width = "100%";
+      return;
+    }
 
-          // =========================
-          // 기본 정보 가져오기
-          // =========================
+    // =========================
+    // 다음 설문 로드
+    // =========================
 
-          const gender =
+    loadSurvey();
 
-            document.querySelector(
-              'input[name="gender"]:checked'
-            ).value;
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
 
-          const age =
-
-            document.getElementById(
-              "age"
-            ).value;
-
-          // =========================
-          // 전송 데이터
-          // =========================
-
-          const sendData = {
-
-            respondentId: respondentId,
-            gender: gender,
-            age: age,
-            responses: responses
-
-          };
-
-          // =========================
-          // Google Sheets 전송
-          // =========================
-
-          fetch(
-
-            "https://script.google.com/macros/s/AKfycbyh5SISlivddmZM3Gn8tbkzHwuyIhPIaEtrJu5DDxEvvWXG1qDGIr_35X2DeEeoZNDAFA/exec",
-
-            {
-
-              method: "POST",
-              
-              mode: "no-cors",
-              
-              body: JSON.stringify(sendData)
-
-            }
-
-          )
-
-          .then(() => {
-
-            document.getElementById(
-              "surveyPage"
-            ).classList.add("hidden");
-
-            document.getElementById(
-              "thankYouPage"
-            ).classList.remove("hidden");
-
-          })
-
-          .catch(error => {
-
-            console.error(error);
-
-            alert(
-              "응답 저장 중 오류가 발생했습니다."
-            );
-
-          });
-
-          return;
-        }
-
-        // 다음 설문 로드
-
-        loadSurvey();
-
-        // 페이지 맨 위 이동
-
-        window.scrollTo({
-
-          top: 0,
-
-          behavior: "smooth"
-
-        });
-      }
-    );
+  }
+);
     
   </script>
 
