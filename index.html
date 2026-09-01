@@ -811,13 +811,6 @@ document.getElementById(
     // =========================
     // 다음 설문 로드
     // =========================
-document.getElementById("prevBtn").addEventListener(
-  "click",
-  function() {
-
-  if (currentIndex > 0) {
-
-    currentIndex--;
     loadSurvey();
 
     window.scrollTo({
@@ -825,8 +818,32 @@ document.getElementById("prevBtn").addEventListener(
       behavior: "smooth"
     });
 
-  }
-);
+      }
+    );
+
+    // =========================
+    // 이전 버튼
+    // =========================
+
+    document.getElementById("prevBtn").addEventListener(
+      "click",
+      function() {
+
+        if (currentIndex > 0) {
+
+          currentIndex--;
+
+          loadSurvey();
+
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+          });
+
+        }
+
+      }
+    );
     
   </script>
 
