@@ -45,6 +45,31 @@
 
     }
 
+    .image-set {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      margin-bottom: 30px;
+    }
+
+    .direction-box {
+      text-align: center;
+    }
+
+    .direction-label {
+      font-weight: bold;
+      margin-bottom: 6px;
+      font-size: 15px;
+    }
+
+    .direction-box img {
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+      border-radius: 0;
+      margin-bottom: 0;
+    }
+
     .question {
       margin-bottom: 40px;
     }
@@ -374,7 +399,29 @@
 
     <!-- 이미지 -->
 
-    <img id="streetImage">
+    <div class="image-set">
+
+    <div class="direction-box">
+      <div class="direction-label">좌측</div>
+      <img id="imageLeft">
+    </div>
+
+    <div class="direction-box">
+      <div class="direction-label">정면</div>
+      <img id="imageFront">
+    </div>
+
+    <div class="direction-box">
+      <div class="direction-label">우측</div>
+      <img id="imageRight">
+    </div>
+
+    <div class="direction-box">
+      <div class="direction-label">뒷면</div>
+      <img id="imageBack">
+    </div>
+
+  </div>
 
     <!-- 질문 -->
 
@@ -416,26 +463,34 @@
     async function getImages() {
 
       const response = await fetch(
-
         "https://api.github.com/repos/qsmytk29-netizen/image-survey-1-/contents"
-
       );
 
       const data = await response.json();
 
-      // jpg만 추출
-
-      const imageList = data
-
+      const imageFiles = data
         .filter(file =>
           file.name.toLowerCase().endsWith(".jpg")
         )
-
         .map(file =>
           file.name
         );
 
-      return imageList;
+      const baseImageSet = new Set();
+
+      imageFiles.forEach(fileName => {
+
+        const baseName = fileName
+          .replace("_left.jpg", "")
+          .replace("_front.jpg", "")
+          .replace("_right.jpg", "")
+          .replace("_back.jpg", "");
+  
+        baseImageSet.add(baseName);
+
+      });
+
+      return Array.from(baseImageSet);
 
     }
 
@@ -584,11 +639,20 @@
 
       // 이미지 표시
 
-      document.getElementById(
-        "streetImage"
-      ).src =
-
+      const baseImage =
         selectedImages[currentIndex];
+
+      document.getElementById("imageLeft").src =
+        baseImage + "_left.jpg";
+
+      document.getElementById("imageFront").src =
+        baseImage + "_front.jpg";
+
+      document.getElementById("imageRight").src =
+        baseImage + "_right.jpg";
+
+      document.getElementById("imageBack").src =
+        baseImage + "_back.jpg";
 
       // 질문 생성
 
