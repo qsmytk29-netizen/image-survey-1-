@@ -463,7 +463,7 @@
     async function getImages() {
 
       const response = await fetch(
-        "https://api.github.com/repos/qsmytk29-netizen/image-survey-1-/contents"
+        "https://api.github.com/repos/qsmytk29-netizen/image-survey-1-/contents/images_static"
       );
 
       const data = await response.json();
@@ -669,16 +669,16 @@
         selectedImages[currentIndex];
 
       document.getElementById("imageLeft").src =
-        baseImage + "_left.jpg";
+        "images_static/" + baseImage + "_left.jpg";
 
       document.getElementById("imageFront").src =
-        baseImage + "_front.jpg";
+        "images_static/" + baseImage + "_front.jpg";
 
       document.getElementById("imageRight").src =
-        baseImage + "_right.jpg";
+        "images_static/" + baseImage + "_right.jpg";
 
       document.getElementById("imageBack").src =
-        baseImage + "_back.jpg";
+        "images_static/" + baseImage + "_back.jpg";
 
       // 질문 생성
 
