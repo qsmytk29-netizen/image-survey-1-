@@ -470,27 +470,53 @@
 
       const imageFiles = data
         .filter(file =>
-          file.name.toLowerCase().endsWith(".jpg")
+          file.type === "file" &&
+          file.name.toLowerCase().endsWith(".jpg") &&
+          file.name.toLowerCase().startsWith("img_")
         )
-        .map(file =>
-          file.name
-        );
+        .map(file => file.name);
 
-      const baseImageSet = new Set();
+      const baseMap = {};
 
       imageFiles.forEach(fileName => {
 
-        const baseName = fileName
-          .replace("_left.jpg", "")
-          .replace("_front.jpg", "")
-          .replace("_right.jpg", "")
-          .replace("_back.jpg", "");
-  
-        baseImageSet.add(baseName);
+        const lowerName =
+          fileName.toLowerCase();
+
+        let direction = "";
+
+        if (lowerName.endsWith("_left.jpg")) {
+          direction = "left";
+        } else if (lowerName.endsWith("_front.jpg")) {
+          direction = "front";
+        } else if (lowerName.endsWith("_right.jpg")) {
+          direction = "right";
+        } else if (lowerName.endsWith("_back.jpg")) {
+          direction = "back";
+        } else {
+          return;
+        }
+
+        const baseName =
+          fileName.replace(/_(left|front|right|back)\.jpg$/i, "");
+
+        if (!baseMap[baseName]) {
+          baseMap[baseName] = {};
+        }
+
+        baseMap[baseName][direction] = true;
 
       });
 
-      return Array.from(baseImageSet);
+      const completeBaseImages =
+        Object.keys(baseMap).filter(baseName =>
+          baseMap[baseName].left &&
+          baseMap[baseName].front &&
+          baseMap[baseName].right &&
+          baseMap[baseName].back
+        );
+
+      return completeBaseImages;
 
     }
 
