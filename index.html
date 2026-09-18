@@ -50,7 +50,6 @@
       grid-template-columns: repeat(4, 1fr);
       gap: 4px;
       margin-bottom: 30px;
-      min-width: 720px;
     }
 
     .direction-box {
@@ -73,15 +72,22 @@
 
     @media (max-width: 600px) {
 
-    .image-set {
-      min-width: 720px;
-    }
+      .image-set {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 3px;
+      }
 
-    #surveyPage {
-      overflow-x: auto;
-    }
+      .direction-label {
+        font-size: 13px;
+        margin-bottom: 4px;
+      }
 
-  }
+      .direction-box img {
+        height: 150px;
+        object-fit: cover;
+      }
+
+    }
 
     .question {
       margin-bottom: 40px;
